@@ -30,7 +30,7 @@ class Common(Configuration):
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = values.BooleanValue(False)
 
-    ALLOWED_HOSTS = values.ListValue([])
+    ALLOWED_HOSTS = []
 
     # Application definition
     INSTALLED_APPS = [
