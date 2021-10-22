@@ -253,3 +253,5 @@ class Production(Staging):
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True
     )
+    
+    Common.ALLOWED_HOSTS.append('skillup-api.herokuapp.com')
