@@ -54,13 +54,15 @@ class Common(Configuration):
         'rest_framework_simplejwt',
         'rest_framework_simplejwt.token_blacklist',
         'django_rest_passwordreset',
-        'rest_framework'
+        'rest_framework',
+        "corsheaders"
     ]
 
     MIDDLEWARE = [
         'django.middleware.security.SecurityMiddleware',
         'whitenoise.middleware.WhiteNoiseMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
+        "corsheaders.middleware.CorsMiddleware",
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -196,7 +198,7 @@ class Common(Configuration):
     GOOGLE_CLIENT_SECRET=os.getenv('GOOGLE_SECRET')
     
     DEFAULT_FROM_EMAIL = 'admin@skillup.com'
-    
+    CORS_ALLOW_ALL_ORIGINS=True
     
 
 class Development(Common):

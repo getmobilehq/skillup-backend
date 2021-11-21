@@ -7,6 +7,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 from .managers import UserManager
 from django.forms.models import model_to_dict
+import uuid
 
 AUTH_PROVIDERS = {'facebook': 'facebook', 
                   'google': 'google',  
@@ -16,10 +17,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+2341234567890'. Up to 15 digits allowed.")
     
+    id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False,)
     firstname          = models.CharField(_('first name'),max_length = 250)
     lastname          = models.CharField(_('last name'),max_length = 250)
     email         = models.EmailField(_('email'), unique=True)
-    phone         = models.CharField(_('phone'), validators=[phone_regex],max_length = 17)
+    phone         = models.CharField(_('phone'), validators=[phone_regex],max_length = 15)
     password      = models.CharField(_('password'), max_length=300)
     how_did_you_hear_about_us = models.CharField(max_length=500)
     is_staff      = models.BooleanField(_('staff'), default=False)
