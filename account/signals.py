@@ -104,11 +104,11 @@ class OTPVerifySerializer(serializers.Serializer):
             raise serializers.ValidationError(detail='Invalid OTP')
         
         
-class NewOtpSerializer(serializers.Serializer):
+class OtpSerializer(serializers.Serializer):
     email = serializers.EmailField()
     
      
-    def get_new_otp(self):
+    def get_otp(self):
         try:
             user = User.objects.get(email=self.validated_data['email'], is_active=True, has_verified_email=False)
         except User.DoesNotExist:
