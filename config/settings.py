@@ -197,9 +197,9 @@ class Common(Configuration):
     GOOGLE_CLIENT_ID=os.getenv('GOOGLE_CLIENT_ID')
     GOOGLE_CLIENT_SECRET=os.getenv('GOOGLE_SECRET')
     
-    DEFAULT_FROM_EMAIL = 'admin@skillup.com'
-    CORS_ALLOW_ALL_ORIGINS=True
     
+    CORS_ALLOW_ALL_ORIGINS=True
+
 
 class Development(Common):
     """
@@ -219,7 +219,8 @@ class Development(Common):
     
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-
+    DEFAULT_FROM_EMAIL = 'SkillUp Africa <hello@skillup.africa>'
+    
 class Staging(Common):
     """
     The in-staging settings.
@@ -257,3 +258,11 @@ class Production(Staging):
     )
     
     Common.ALLOWED_HOSTS.append('skillup-api.herokuapp.com')
+    
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'in-v3.mailjet.com' 
+    EMAIL_PORT = 25
+    EMAIL_HOST_USER = os.getenv('EMAIL_USERNAME')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
+    EMAIL_USE_TLS =True 
+    
