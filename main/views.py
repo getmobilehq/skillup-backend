@@ -30,7 +30,7 @@ def verify_identity(request):
         if serializer.is_valid():
             res = serializer.check_identity(serializer.validated_data, request)
             
-            return Response(res, status = status.HTTP_201_CREATED)
+            return Response(res, status = status.HTTP_200_OK)
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

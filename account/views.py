@@ -11,7 +11,7 @@ from rest_framework import status
 
 from .models import User
 from .serializers import ChangePasswordSerializer, UserSerializer # ,CookieTokenRefreshSerializer
-from .signals import NewOtpSerializer, OTPVerifySerializer
+from .signals import OtpSerializer, OTPVerifySerializer
 
 from .permissions import IsAdminOrReadOnly, IsAdminUser_Custom
 
@@ -252,13 +252,15 @@ def get_user_detail(request, user_id):
 
 
 
-@swagger_auto_schema(methods=['POST'],  request_body=NewOtpSerializer())
+@swagger_auto_schema(methods=['POST'],  request_body=OtpSerializer())
 @api_view(['POST'])
+# @authentication_classes([JWTAuthentication])
+# @permission_classes([IsAuthenticated])
 def send_otp(request):
     if request.method == 'POST':
-        serializer = NewOtpSerializer(data = request.data)
+        serializer = OtpSerializer(data = request.data)
         if serializer.is_valid():
-            data = serializer.get_new_otp()
+            data = serializer.get_otp()
             
             return Response(data, status=status.HTTP_200_OK)
         
@@ -269,6 +271,8 @@ def send_otp(request):
             
 @swagger_auto_schema(methods=['POST'], request_body=OTPVerifySerializer())
 @api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def otp_verification(request):
     
     """Api view for verifying OTPs """
