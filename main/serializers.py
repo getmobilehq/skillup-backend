@@ -73,11 +73,14 @@ class VerifyIdentity(serializers.ModelSerializer):
                 user.save()
                 
                 res = {
+                    'status':True,
                     "message":"Identity Confirmed"
                 }
                 
             else:
+                
                 res = {
+                    'status':False,
                     "message" : "Unable to confirm your identity. Please try again."
                 }
                 
@@ -239,11 +242,11 @@ class PathWaySerializer(serializers.ModelSerializer):
         
 class LaptopLoanSerializer(serializers.Serializer):
     has_laptop = serializers.BooleanField()
-    take_laptop_loan = serializers.BooleanField()
+    take_laptop_loan = serializers.BooleanField(required=False)
     
     def save_laptop_detail(self, validated_data, request):
         if request.user.has_added_laptop_detail == False:
-            request.user.has_laptop = request['has_laptop']
+            request.user.has_laptop = validated_data['has_laptop']
             request.user.take_laptop_loan = validated_data['take_laptop_loan']
             request.user.checklist_count +=1
             request.user.save()

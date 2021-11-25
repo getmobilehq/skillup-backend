@@ -81,12 +81,12 @@ class Address(models.Model):
 
 class SocialMedia(models.Model):
     user=models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='handles', null=True, blank=True)
-    facebook = models.URLField(null=True)
-    linkedin=models.URLField(null=True)
-    instagram=models.URLField(null=True)
-    twitter=models.URLField(null=True)
-    github=models.URLField(null=True)
-    behance=models.URLField(null=True)
+    facebook = models.URLField(null=True, blank=True)
+    linkedin=models.URLField(null=True, blank=True)
+    instagram=models.URLField(null=True, blank=True)
+    twitter=models.URLField(null=True, blank=True)
+    github=models.URLField(null=True, blank=True)
+    behance=models.URLField(null=True, blank=True)
     is_active=models.BooleanField(default=True)
     
     

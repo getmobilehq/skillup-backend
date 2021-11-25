@@ -29,8 +29,10 @@ def verify_identity(request):
 
         if serializer.is_valid():
             res = serializer.check_identity(serializer.validated_data, request)
-            
-            return Response(res, status = status.HTTP_200_OK)
+            if res['status'] == True:
+                return Response(res, status = status.HTTP_200_OK)
+            else:
+                return Response(res, status = status.HTTP_400_BAD_REQUEST)
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -504,6 +506,7 @@ def unemployed(request):
         if request.user.has_added_employment_detail == False:
             request.user.has_work_experience = False
             request.user.has_added_employment_detail=True
+            request.user.checklist_count+=1
             request.user.save()
         
             return Response({'message':'success'}, status=status.HTTP_202_ACCEPTED)
