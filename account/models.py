@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from .managers import UserManager
 from django.forms.models import model_to_dict
 import uuid
+from django.utils import timezone
 
 AUTH_PROVIDERS = {'facebook': 'facebook', 
                   'google': 'google',  
@@ -94,6 +95,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 class OTP(models.Model):
     code = models.CharField(max_length=6)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='otps')
+    expiry_date = models.DateTimeField(null=True)
+    
+    
+    def is_expired(self):
+        return timezone.now() > self.expiry_date
     
 
     

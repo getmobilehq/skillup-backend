@@ -271,8 +271,8 @@ def send_otp(request):
             
 @swagger_auto_schema(methods=['POST'], request_body=OTPVerifySerializer())
 @api_view(['POST'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([JWTAuthentication])
+# @permission_classes([IsAuthenticated])
 def otp_verification(request):
     
     """Api view for verifying OTPs """
