@@ -532,8 +532,8 @@ def add_tertiary_institution(request):
 
 @swagger_auto_schema(method='post', request_body=AddHighSchoolSerializer())
 @api_view(['POST'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])  
+# @authentication_classes([JWTAuthentication])
+# @permission_classes([IsAuthenticated])  
 def add_high_school(request):
     if request.method == 'POST':
         serializer = AddHighSchoolSerializer(data=request.data)
