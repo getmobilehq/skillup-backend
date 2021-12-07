@@ -70,6 +70,7 @@ class VerifyIdentity(serializers.ModelSerializer):
                 identity = signer.sign_object(validated_data['identity'])
                 UserIdentity.objects.create(identity_type = validated_data['identity_type'], identity=identity, user=user)
                 user.identity_verification = True
+                user.checklist_count+=1
                 user.save()
                 
                 res = {
@@ -152,8 +153,9 @@ class EmployeeListSerializer(serializers.ListSerializer):
                 data.pop('user')
             employment_detail.append(UserEmploymentDetail.objects.create(**data, user=request.user))
          
-        request.user.has_work_experience = True
-        request.user.save()   
+        # request.user.has_work_experience = True
+        # request.user.checklist_count+=1
+        # request.user.save()   
         return list_to_queryset(UserEmploymentDetail,employment_detail)
     
     
@@ -196,6 +198,7 @@ class AddInstitutionSerializer(serializers.Serializer):
             request.user.completed_nysc = validated_data['completed_nysc']
             request.user.nysc_not_applicable_reason = validated_data['nysc_not_applicable_reason']
             request.user.has_added_academic_detail=True
+            request.user.checklist_count+=1
             request.user.save()
             return request.user 
         else:
@@ -215,6 +218,7 @@ class AddHighSchoolSerializer(serializers.Serializer):
                 i.append(HighSchool(**school, user=request.user))
             HighSchool.objects.bulk_create(i)
             request.user.has_added_academic_detail=True
+            request.user.checklist_count+=1
             request.user.save()
             return request.user 
         else:
@@ -234,6 +238,7 @@ class PathWaySerializer(serializers.ModelSerializer):
                 validated_data.pop('user')
             TrainingPathway.objects.create(**validated_data, user=request.user)
             request.user.has_added_training_pathway=True
+            request.user.checklist_count+=1
             request.user.save()
             return request.user 
         else:
@@ -248,6 +253,7 @@ class LaptopLoanSerializer(serializers.Serializer):
         if request.user.has_added_laptop_detail == False:
             request.user.has_laptop = validated_data['has_laptop']
             request.user.take_laptop_loan = validated_data['take_laptop_loan']
+            request.user.has_added_laptop_detail = True
             request.user.checklist_count +=1
             request.user.save()
             
