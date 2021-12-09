@@ -42,7 +42,9 @@ class VerifyIdentity(serializers.ModelSerializer):
         if user.identity_verification == True:
             raise serializers.ValidationError({"message":"Identity already verified"})
         else:
-            if validated_data['identity_type'] == 'bvn':
+            
+            identity_type =validated_data['identity_type'].lower()
+            if identity_type == 'bvn':
                 if len(validated_data['identity']) == 11:
                     url = baseurl+'/bvn/{}'.format(validated_data['identity'])
                     
@@ -54,7 +56,7 @@ class VerifyIdentity(serializers.ModelSerializer):
                     response = requests.post(url,headers={"Authorization": "Bearer {}".format(settings.Common.VERIFY_ME_KEY)}, data=data)
                 else:
                     raise serializers.ValidationError({"bvn":["Invalid BVN"]})
-            elif validated_data['identity_type'] == 'nin':
+            elif identity_type == 'nin':
                 url = baseurl+'/nin/{}'.format(validated_data['identity'])
                 data = {
                     "firstname":request.user.firstname,
@@ -68,7 +70,7 @@ class VerifyIdentity(serializers.ModelSerializer):
 
             if response.json()["status"] == "success":
                 identity = signer.sign_object(validated_data['identity'])
-                UserIdentity.objects.create(identity_type = validated_data['identity_type'], identity=identity, user=user)
+                UserIdentity.objects.create(identity_type = identity_type, identity=identity, user=user)
                 user.identity_verification = True
                 user.checklist_count+=1
                 user.save()
@@ -82,7 +84,7 @@ class VerifyIdentity(serializers.ModelSerializer):
                 
                 res = {
                     'status':False,
-                    "message" : "Unable to confirm your identity. Please try again."
+                    "message" : f"Unable to confirm your identity. Please ensure you have used your correct {identity_type}."
                 }
                 
             return res

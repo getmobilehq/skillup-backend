@@ -105,7 +105,7 @@ def user_address(request):
         
         if serializer.is_valid():
             
-            if request.user.has_added_address:
+            if request.user.has_added_address == True:
                 data = {
                 'status' : True,
                 'message' : 'cannot add multiple addresses',
