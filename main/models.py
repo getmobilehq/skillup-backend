@@ -51,7 +51,7 @@ class UserProfile(models.Model):
     financial_reponsibilities_explanation = models.TextField(null=True, blank=True)
     voluntering_experience=models.BooleanField()
     voluntering_experience_detail = models.TextField(null=True, blank=True)
-    volunter_year = models.CharField(max_length=300)
+    volunter_year = models.CharField(max_length=300,null=True, blank=True)
     user=models.ForeignKey(User, on_delete=models.DO_NOTHING,  related_name='profiles', null=True,blank=True)
     is_active=models.BooleanField(default=True)
 
