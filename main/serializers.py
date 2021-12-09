@@ -1,4 +1,3 @@
-from django.db.models.fields import TextField
 from rest_framework import serializers
 from .models import KYC, Address, BankDetails, HighSchool, SocialMedia, TertiaryInstitution, TrainingPathway, UserEmploymentDetail,  UserIdentity, UserProfile
 from django.contrib.auth import get_user_model
@@ -185,7 +184,7 @@ class HighSchoolSerializer(serializers.ModelSerializer):
 class AddInstitutionSerializer(serializers.Serializer):
     tertiary = TertiaryInstitutionSerializer(many=True)
     completed_nysc = serializers.CharField(max_length=200)
-    nysc_not_applicable_reason = serializers.CharField(required=False, max_length=5000)
+    nysc_not_applicable_reason = serializers.CharField(required=False, allow_blank=True, max_length=5000)
     
     
     def save_institution(self, validated_data,request):
