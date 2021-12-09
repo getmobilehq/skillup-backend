@@ -29,7 +29,7 @@ class UserEmploymentDetail(models.Model):
     employment_type = models.CharField(max_length=350)
     startdate = models.CharField(max_length=300)
     enddate = models.CharField(max_length=300, null=True, blank=True)
-    currently_works_there=models.BooleanField(default=False)
+    currently_works_there=models.BooleanField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='employments', null=True, blank=True)
     is_active = models.BooleanField(default=True)
     

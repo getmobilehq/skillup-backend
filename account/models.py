@@ -29,7 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_admin      = models.BooleanField(_('admin'), default= False)
     is_active     = models.BooleanField(_('active'), default=True)
     completed_nysc = models.CharField(max_length=250, null=True, blank=True)
-    nysc_not_applicable_reason = models.TextField(null=True)
+    nysc_not_applicable_reason = models.TextField(null=True, blank=True)
     has_work_experience = models.BooleanField(_('work experience'), blank=True, null=True)
     has_laptop = models.BooleanField(null=True, blank=True) 
     take_laptop_loan = models.BooleanField(null=True, blank=True) 
