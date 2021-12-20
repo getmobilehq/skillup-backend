@@ -94,7 +94,7 @@ class FileUploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=KYC
-        fields = ('id','file','state_of_residence', 'address', 'city', 'local_gov', 'doc_url', 'password')
+        fields = ('id', 'file','state_of_residence', 'address', 'city', 'local_gov', 'doc_url', 'password')
 
     def upload(self, validated_data, request):
         if request.user.has_added_kyc==False:
