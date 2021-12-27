@@ -16,7 +16,7 @@ from dotenv import load_dotenv, find_dotenv
 import os
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
-
+import cloudinary
 load_dotenv(find_dotenv())
 
 
@@ -199,6 +199,14 @@ class Common(Configuration):
     
     
     CORS_ALLOW_ALL_ORIGINS=True
+    
+    #CLOUDINARY FILE UPLOADS
+    cloudinary.config(
+        cloud_name = os.getenv('CLOUD_NAME'),
+        api_key = os.getenv('CLOUD_API_KEY'),
+        api_secret = os.getenv('CLOUD_API_SECRET')
+    )
+
 
 
 class Development(Common):

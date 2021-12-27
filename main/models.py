@@ -11,7 +11,8 @@ class UserIdentity(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True,blank=True,  related_name='identities')
     identity_type = models.CharField(max_length=200)
     identity = models.CharField(max_length=300)
-
+    date_added = models.DateTimeField(auto_now_add=True)
+    
 class BankDetails(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bank', null=True, blank=True)
     bank_name = models.CharField(max_length=250)
@@ -32,7 +33,7 @@ class UserEmploymentDetail(models.Model):
     currently_works_there=models.BooleanField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='employments', null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    
+    date_added = models.DateTimeField(auto_now_add=True)
     
     
     def delete(self):
@@ -54,7 +55,7 @@ class UserProfile(models.Model):
     volunter_year = models.CharField(max_length=300,null=True, blank=True)
     user=models.ForeignKey(User, on_delete=models.DO_NOTHING,  related_name='profiles', null=True,blank=True)
     is_active=models.BooleanField(default=True)
-
+    date_added = models.DateTimeField(auto_now_add=True)
     
     def delete(self):
         self.is_active=False
@@ -70,7 +71,7 @@ class Address(models.Model):
     city=models.CharField(max_length=400)
     region=models.CharField(max_length=400)
     is_active=models.BooleanField(default=True)
-    
+    date_added = models.DateTimeField(auto_now_add=True)
     
     def delete(self):
         self.is_active=False
@@ -88,7 +89,7 @@ class SocialMedia(models.Model):
     github=models.URLField(null=True, blank=True)
     behance=models.URLField(null=True, blank=True)
     is_active=models.BooleanField(default=True)
-    
+    date_added = models.DateTimeField(auto_now_add=True)
     
     def delete(self):
         self.is_active=False
@@ -101,11 +102,11 @@ class TertiaryInstitution(models.Model):
     field_of_study = models.CharField(max_length=300)
     qualification = models.CharField(max_length=300)
     start_date = models.DateField()
-    end_date = models.DateField(null=True)
+    end_date = models.DateField(null=True, blank=True)
     complete = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='tertiary_institutions')
     is_active=models.BooleanField(default=True)
-    
+    date_added = models.DateTimeField(auto_now_add=True)
     
     def delete(self):
         self.is_active=False
@@ -118,11 +119,12 @@ class HighSchool(models.Model):
     institution = models.CharField(max_length=3600)
     qualification = models.CharField(max_length=300)
     start_date = models.DateField()
-    end_date = models.DateField(null=True)
+    end_date = models.DateField(null=True, blank=True)
     complete = models.BooleanField(default=False)
+    expected_end_date = models.DateField(null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='high_schools')
     is_active=models.BooleanField(default=True)
-    
+    date_added = models.DateTimeField(auto_now_add=True)
     
     def delete(self):
         self.is_active=False
@@ -136,7 +138,8 @@ class TrainingPathway(models.Model):
     campus = models.CharField(max_length=300)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='pathway')
     is_active = models.BooleanField(default=True)
-    
+    date_added = models.DateTimeField(auto_now_add=True)
+        
     def delete(self):
         self.is_active=False
         self.save()
