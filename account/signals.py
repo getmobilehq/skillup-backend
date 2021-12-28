@@ -24,7 +24,7 @@ User = get_user_model()
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
-    token = "https://skillupafrica.netlify.app/{}".format(reset_password_token.key)
+    token = "https://skillupafrica.netlify.app/reset/{}".format(reset_password_token.key)
     
     msg_html = render_to_string('forgot_password.html', {
                         'first_name': str(reset_password_token.user.firstname).title(),
