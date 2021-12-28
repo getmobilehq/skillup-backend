@@ -1,4 +1,3 @@
-from django.db.models.fields import TextField
 from rest_framework import serializers
 from .models import KYC, Address, BankDetails, HighSchool, SocialMedia, TertiaryInstitution, TrainingPathway, UserEmploymentDetail,  UserIdentity, UserProfile
 from django.contrib.auth import get_user_model
@@ -42,7 +41,9 @@ class VerifyIdentity(serializers.ModelSerializer):
         if user.identity_verification == True:
             raise serializers.ValidationError({"message":"Identity already verified"})
         else:
-            if validated_data['identity_type'] == 'bvn':
+            
+            identity_type =validated_data['identity_type'].lower()
+            if identity_type == 'bvn':
                 if len(validated_data['identity']) == 11:
                     url = baseurl+'/bvn/{}'.format(validated_data['identity'])
                     
@@ -54,7 +55,7 @@ class VerifyIdentity(serializers.ModelSerializer):
                     response = requests.post(url,headers={"Authorization": "Bearer {}".format(settings.Common.VERIFY_ME_KEY)}, data=data)
                 else:
                     raise serializers.ValidationError({"bvn":["Invalid BVN"]})
-            elif validated_data['identity_type'] == 'nin':
+            elif identity_type == 'nin':
                 url = baseurl+'/nin/{}'.format(validated_data['identity'])
                 data = {
                     "firstname":request.user.firstname,
@@ -68,8 +69,9 @@ class VerifyIdentity(serializers.ModelSerializer):
 
             if response.json()["status"] == "success":
                 identity = signer.sign_object(validated_data['identity'])
-                UserIdentity.objects.create(identity_type = validated_data['identity_type'], identity=identity, user=user)
+                UserIdentity.objects.create(identity_type = identity_type, identity=identity, user=user)
                 user.identity_verification = True
+                user.checklist_count+=1
                 user.save()
                 
                 res = {
@@ -81,7 +83,7 @@ class VerifyIdentity(serializers.ModelSerializer):
                 
                 res = {
                     'status':False,
-                    "message" : "Unable to confirm your identity. Please try again."
+                    "message" : f"Unable to confirm your identity. Please ensure you have used your correct {identity_type}."
                 }
                 
             return res
@@ -92,7 +94,7 @@ class FileUploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=KYC
-        fields = ('id','file','state_of_residence', 'address', 'city', 'local_gov', 'doc_url', 'password')
+        fields = ('id', 'file','state_of_residence', 'address', 'city', 'local_gov', 'doc_url', 'password')
 
     def upload(self, validated_data, request):
         if request.user.has_added_kyc==False:
@@ -152,8 +154,9 @@ class EmployeeListSerializer(serializers.ListSerializer):
                 data.pop('user')
             employment_detail.append(UserEmploymentDetail.objects.create(**data, user=request.user))
          
-        request.user.has_work_experience = True
-        request.user.save()   
+        # request.user.has_work_experience = True
+        # request.user.checklist_count+=1
+        # request.user.save()   
         return list_to_queryset(UserEmploymentDetail,employment_detail)
     
     
@@ -181,7 +184,7 @@ class HighSchoolSerializer(serializers.ModelSerializer):
 class AddInstitutionSerializer(serializers.Serializer):
     tertiary = TertiaryInstitutionSerializer(many=True)
     completed_nysc = serializers.CharField(max_length=200)
-    nysc_not_applicable_reason = serializers.CharField(required=False, max_length=5000)
+    nysc_not_applicable_reason = serializers.CharField(required=False, allow_blank=True, max_length=5000)
     
     
     def save_institution(self, validated_data,request):
@@ -196,6 +199,7 @@ class AddInstitutionSerializer(serializers.Serializer):
             request.user.completed_nysc = validated_data['completed_nysc']
             request.user.nysc_not_applicable_reason = validated_data['nysc_not_applicable_reason']
             request.user.has_added_academic_detail=True
+            request.user.checklist_count+=1
             request.user.save()
             return request.user 
         else:
@@ -215,6 +219,7 @@ class AddHighSchoolSerializer(serializers.Serializer):
                 i.append(HighSchool(**school, user=request.user))
             HighSchool.objects.bulk_create(i)
             request.user.has_added_academic_detail=True
+            request.user.checklist_count+=1
             request.user.save()
             return request.user 
         else:
@@ -234,6 +239,7 @@ class PathWaySerializer(serializers.ModelSerializer):
                 validated_data.pop('user')
             TrainingPathway.objects.create(**validated_data, user=request.user)
             request.user.has_added_training_pathway=True
+            request.user.checklist_count+=1
             request.user.save()
             return request.user 
         else:
@@ -248,6 +254,7 @@ class LaptopLoanSerializer(serializers.Serializer):
         if request.user.has_added_laptop_detail == False:
             request.user.has_laptop = validated_data['has_laptop']
             request.user.take_laptop_loan = validated_data['take_laptop_loan']
+            request.user.has_added_laptop_detail = True
             request.user.checklist_count +=1
             request.user.save()
             

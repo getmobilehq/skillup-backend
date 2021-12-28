@@ -51,7 +51,7 @@ def upload_doc(request):
 
         if serializer.is_valid():
             password = serializer.validated_data.pop('password')
-            auth_user = authenticate(request.user.email, password)
+            auth_user = authenticate(email = request.user.email, password = password)
             if auth_user and auth_user == request.user:
                 user = serializer.upload(serializer.validated_data, request)
                 
@@ -105,7 +105,7 @@ def user_address(request):
         
         if serializer.is_valid():
             
-            if request.user.has_added_address:
+            if request.user.has_added_address == True:
                 data = {
                 'status' : True,
                 'message' : 'cannot add multiple addresses',
