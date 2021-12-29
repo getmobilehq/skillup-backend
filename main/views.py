@@ -40,8 +40,8 @@ def verify_identity(request):
 
 @swagger_auto_schema(methods=['POST'], request_body=FileUploadSerializer())
 @api_view(['POST'])
-# @authentication_classes([JWTAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def upload_doc(request):
     if request.method == 'POST':
         
