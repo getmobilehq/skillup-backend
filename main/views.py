@@ -64,8 +64,8 @@ def upload_doc(request):
                 
 
                 return Response(data, status = status.HTTP_200_OK)
-            # else:
-            #     raise ValidationError(detail="Password is incorrect.")
+            else:
+                raise ValidationError(detail="Password is incorrect.")
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -103,9 +103,9 @@ class FileUploadSerializer(serializers.ModelSerializer):
             if 'doc_url' in validated_data.keys():
                 validated_data.pop('doc_url')
 
-            file = validated_data['file'] #get the image file from the request 
+            file = validated_data.pop('file') #get the image file from the request 
             img = cloudinary.uploader.upload(file, folder = 'SkillUP KYC/') 
-            print(img)
+            # print(img)
             #upload the image to cloudinary
             KYC.objects.create(**validated_data, doc_url=img['secure_url'], user=request.user)
             request.user.has_added_kyc =True
