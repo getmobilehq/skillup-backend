@@ -104,7 +104,9 @@ class FileUploadSerializer(serializers.ModelSerializer):
                 validated_data.pop('doc_url')
 
             file = validated_data['file'] #get the image file from the request 
-            img = cloudinary.uploader.upload(file, folder = 'SkillUP KYC/') #upload the image to cloudinary
+            img = cloudinary.uploader.upload(file, folder = 'SkillUP KYC/') 
+            print(img)
+            #upload the image to cloudinary
             KYC.objects.create(**validated_data, doc_url=img['secure_url'], user=request.user)
             request.user.has_added_kyc =True
             request.user.checklist_count+=1
@@ -248,12 +250,12 @@ class PathWaySerializer(serializers.ModelSerializer):
         
 class LaptopLoanSerializer(serializers.Serializer):
     has_laptop = serializers.BooleanField()
-    take_laptop_loan = serializers.BooleanField(required=False)
-    
+    take_laptop_loan = serializers.BooleanField(required=False) 
     def save_laptop_detail(self, validated_data, request):
         if request.user.has_added_laptop_detail == False:
             request.user.has_laptop = validated_data['has_laptop']
-            request.user.take_laptop_loan = validated_data['take_laptop_loan']
+            if 'take_laptop_loan' in validated_data.keys():
+                request.user.take_laptop_loan = validated_data['take_laptop_loan']
             request.user.has_added_laptop_detail = True
             request.user.checklist_count +=1
             request.user.save()

@@ -40,8 +40,8 @@ def verify_identity(request):
 
 @swagger_auto_schema(methods=['POST'], request_body=FileUploadSerializer())
 @api_view(['POST'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([JWTAuthentication])
+# @permission_classes([IsAuthenticated])
 def upload_doc(request):
     if request.method == 'POST':
         
@@ -52,7 +52,7 @@ def upload_doc(request):
         if serializer.is_valid():
             password = serializer.validated_data.pop('password')
             auth_user = authenticate(email = request.user.email, password = password)
-            if auth_user and auth_user == request.user:
+            if auth_user != None and auth_user == request.user:
                 user = serializer.upload(serializer.validated_data, request)
                 
                 user_serializer = UserSerializer(user)
@@ -64,8 +64,8 @@ def upload_doc(request):
                 
 
                 return Response(data, status = status.HTTP_200_OK)
-            else:
-                raise ValidationError(detail="Password is incorrect.")
+            # else:
+            #     raise ValidationError(detail="Password is incorrect.")
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
