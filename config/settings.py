@@ -206,6 +206,7 @@ class Common(Configuration):
         api_key = os.getenv('CLOUD_API_KEY'),
         api_secret = os.getenv('CLOUD_API_SECRET')
     )
+    DEFAULT_FROM_EMAIL = 'Skillup Africa <hello@skillup.africa>'
 
 
 
