@@ -67,7 +67,7 @@ class UserProfile(models.Model):
 class Address(models.Model):
     user=models.ForeignKey(User, on_delete=models.DO_NOTHING,  related_name='addresses',null=True, blank=True)
     address = models.TextField()
-    additional_info = models.TextField()
+    additional_info = models.TextField(null=True, blank=True)
     city=models.CharField(max_length=400)
     region=models.CharField(max_length=400)
     is_active=models.BooleanField(default=True)
