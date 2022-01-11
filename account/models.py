@@ -22,7 +22,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     firstname          = models.CharField(_('first name'),max_length = 250)
     lastname          = models.CharField(_('last name'),max_length = 250)
     email         = models.EmailField(_('email'), unique=True)
-    phone         = models.CharField(_('phone'), validators=[phone_regex],max_length = 15)
+    phone         = models.CharField(_('phone'), validators=[phone_regex],max_length = 15, unique=True)
     password      = models.CharField(_('password'), max_length=300)
     how_did_you_hear_about_us = models.CharField(max_length=500)
     is_staff      = models.BooleanField(_('staff'), default=False)
