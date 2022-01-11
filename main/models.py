@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 User=get_user_model()
 
 class UserIdentity(models.Model):
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True,blank=True,  related_name='identities')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True,blank=True,  related_name='identities')
     identity_type = models.CharField(max_length=200)
     identity = models.CharField(max_length=300)
     date_added = models.DateTimeField(auto_now_add=True)
@@ -31,7 +31,7 @@ class UserEmploymentDetail(models.Model):
     startdate = models.CharField(max_length=300)
     enddate = models.CharField(max_length=300, null=True, blank=True)
     currently_works_there=models.BooleanField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='employments', null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='employments', null=True, blank=True)
     is_active = models.BooleanField(default=True)
     date_added = models.DateTimeField(auto_now_add=True)
     
@@ -53,7 +53,7 @@ class UserProfile(models.Model):
     voluntering_experience=models.BooleanField()
     voluntering_experience_detail = models.TextField(null=True, blank=True)
     volunter_year = models.CharField(max_length=300,null=True, blank=True)
-    user=models.ForeignKey(User, on_delete=models.DO_NOTHING,  related_name='profiles', null=True,blank=True)
+    user=models.ForeignKey(User, on_delete=models.CASCADE,  related_name='profiles', null=True,blank=True)
     is_active=models.BooleanField(default=True)
     date_added = models.DateTimeField(auto_now_add=True)
     
@@ -65,7 +65,7 @@ class UserProfile(models.Model):
     
 
 class Address(models.Model):
-    user=models.ForeignKey(User, on_delete=models.DO_NOTHING,  related_name='addresses',null=True, blank=True)
+    user=models.ForeignKey(User, on_delete=models.CASCADE,  related_name='addresses',null=True, blank=True)
     address = models.TextField()
     additional_info = models.TextField(null=True, blank=True)
     city=models.CharField(max_length=400)
@@ -81,7 +81,7 @@ class Address(models.Model):
     
 
 class SocialMedia(models.Model):
-    user=models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='handles', null=True, blank=True)
+    user=models.ForeignKey(User, on_delete=models.CASCADE, related_name='handles', null=True, blank=True)
     facebook = models.URLField(null=True, blank=True)
     linkedin=models.URLField(null=True, blank=True)
     instagram=models.URLField(null=True, blank=True)
@@ -105,7 +105,7 @@ class TertiaryInstitution(models.Model):
     end_date = models.DateField(null=True, blank=True)
     complete = models.BooleanField(null=True, blank=True)
     expected_end_date = models.DateField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='tertiary_institutions')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='tertiary_institutions')
     is_active=models.BooleanField(default=True)
     date_added = models.DateTimeField(auto_now_add=True)
     
@@ -123,7 +123,7 @@ class HighSchool(models.Model):
     end_date = models.DateField(null=True, blank=True)
     complete = models.BooleanField(null=True, blank=True)
     expected_end_date = models.DateField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='high_schools')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='high_schools')
     is_active=models.BooleanField(default=True)
     date_added = models.DateTimeField(auto_now_add=True)
     
@@ -137,7 +137,7 @@ class TrainingPathway(models.Model):
     course = models.CharField(max_length=300)
     cohort = models.CharField(max_length=300)
     campus = models.CharField(max_length=300)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='pathway')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='pathway')
     is_active = models.BooleanField(default=True)
     date_added = models.DateTimeField(auto_now_add=True)
         
@@ -153,7 +153,7 @@ class KYC(models.Model):
     city = models.CharField(max_length=300)
     local_gov = models.CharField(max_length=300)
     doc_url = models.URLField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='kyc_docs')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='kyc_docs')
     is_active =  models.BooleanField(default=True)
     
     
