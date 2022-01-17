@@ -1,7 +1,7 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
-from .models import Address, BankDetails, SocialMedia, UserEmploymentDetail, UserProfile
-from .serializers import AddHighSchoolSerializer, AddInstitutionSerializer, AddressSerializer, BankDetailsSerializer, LaptopLoanSerializer, PathWaySerializer, SocialMediaSerializer, UserEmploymentDetailSerializer, UserProfileSerializer, VerifyIdentity, FileUploadSerializer
+from .models import Address, BankDetails, Cohort, Course, SocialMedia, UserEmploymentDetail, UserProfile
+from .serializers import AddHighSchoolSerializer, AddInstitutionSerializer, AddressSerializer, BankDetailsSerializer, CohortSerializer, CourseSerializer, LaptopLoanSerializer, PathWaySerializer, SocialMediaSerializer, UserEmploymentDetailSerializer, UserProfileSerializer, VerifyIdentity, FileUploadSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -576,3 +576,30 @@ def add_pathway(request):
             return Response(data.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])  
+def courses(request):
+    if request.method == 'GET':
+        course = Course.objects.filter(is_active=True)
+        serializer = CourseSerializer(course)
+        
+            
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])  
+def cohorts(request):
+    if request.method == 'GET':
+        cohort = Cohort.objects.filter(is_active=True)
+        serializer = CohortSerializer(cohort)
+        
+            
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
