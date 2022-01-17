@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import KYC, Address, BankDetails, HighSchool, SocialMedia, TertiaryInstitution, TrainingPathway, UserEmploymentDetail,  UserIdentity, UserProfile
+from .models import KYC, Address, BankDetails, Cohort, Course, HighSchool, SocialMedia, TertiaryInstitution, TrainingPathway, UserEmploymentDetail,  UserIdentity, UserProfile
 from django.contrib.auth import get_user_model
 import requests
 from django.core.signing import Signer
@@ -266,3 +266,15 @@ class LaptopLoanSerializer(serializers.Serializer):
         
 
   
+class CohortSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Cohort
+        fields = '__all__'
+        
+        
+class CourseSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Course
+        fields = '__all__'

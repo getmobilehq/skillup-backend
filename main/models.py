@@ -132,10 +132,30 @@ class HighSchool(models.Model):
         self.save()
         return
     
+class Course(models.Model):
+    title = models.CharField(max_length=250, unique=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    is_active=models.BooleanField(default=True)
+    
+    
+    def delete(self):
+        self.is_active=False
+        self.save()
+        
+        
+class Cohort(models.Model):
+    title = models.CharField(max_length=250, unique=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    is_active=models.BooleanField(default=True)
+    
+    
+    def delete(self):
+        self.is_active=False
+        self.save()
 
 class TrainingPathway(models.Model):
-    course = models.CharField(max_length=300)
-    cohort = models.CharField(max_length=300)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE)
     campus = models.CharField(max_length=300)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='pathway')
     is_active = models.BooleanField(default=True)
@@ -161,3 +181,8 @@ class KYC(models.Model):
         self.is_active=False
         self.save()
         return
+    
+    
+    
+
+        
