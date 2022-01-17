@@ -154,8 +154,8 @@ class Cohort(models.Model):
         self.save()
 
 class TrainingPathway(models.Model):
-    # course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    # cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
+    cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE, null=True)
     campus = models.CharField(max_length=300)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='pathway')
     is_active = models.BooleanField(default=True)
