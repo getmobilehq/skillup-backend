@@ -585,7 +585,7 @@ def add_pathway(request):
 def courses(request):
     if request.method == 'GET':
         course = Course.objects.filter(is_active=True)
-        serializer = CourseSerializer(course)
+        serializer = CourseSerializer(course, many=True)
         
             
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -598,7 +598,7 @@ def courses(request):
 def cohorts(request):
     if request.method == 'GET':
         cohort = Cohort.objects.filter(is_active=True)
-        serializer = CohortSerializer(cohort)
+        serializer = CohortSerializer(cohort, many=True)
         
             
         return Response(serializer.data, status=status.HTTP_200_OK)
