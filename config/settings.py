@@ -266,7 +266,7 @@ class Production(Staging):
     send_default_pii=True
     )
     
-    
+    Common.ALLOWED_HOSTS.append('138.197.178.27')
     
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.gmass.co' 
