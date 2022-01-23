@@ -8,10 +8,11 @@ from django.contrib.auth import get_user_model
 User=get_user_model()
 
 class UserIdentity(models.Model):
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True,blank=True,  related_name='identities')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True,blank=True,  related_name='identities')
     identity_type = models.CharField(max_length=200)
     identity = models.CharField(max_length=300)
-
+    date_added = models.DateTimeField(auto_now_add=True)
+    
 class BankDetails(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bank', null=True, blank=True)
     bank_name = models.CharField(max_length=250)
@@ -29,10 +30,10 @@ class UserEmploymentDetail(models.Model):
     employment_type = models.CharField(max_length=350)
     startdate = models.CharField(max_length=300)
     enddate = models.CharField(max_length=300, null=True, blank=True)
-    currently_works_there=models.BooleanField(default=False)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='employments', null=True, blank=True)
+    currently_works_there=models.BooleanField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='employments', null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    
+    date_added = models.DateTimeField(auto_now_add=True)
     
     
     def delete(self):
@@ -51,10 +52,10 @@ class UserProfile(models.Model):
     financial_reponsibilities_explanation = models.TextField(null=True, blank=True)
     voluntering_experience=models.BooleanField()
     voluntering_experience_detail = models.TextField(null=True, blank=True)
-    volunter_year = models.CharField(max_length=300)
-    user=models.ForeignKey(User, on_delete=models.DO_NOTHING,  related_name='profiles', null=True,blank=True)
+    volunter_year = models.CharField(max_length=300,null=True, blank=True)
+    user=models.ForeignKey(User, on_delete=models.CASCADE,  related_name='profiles', null=True,blank=True)
     is_active=models.BooleanField(default=True)
-
+    date_added = models.DateTimeField(auto_now_add=True)
     
     def delete(self):
         self.is_active=False
@@ -64,13 +65,13 @@ class UserProfile(models.Model):
     
 
 class Address(models.Model):
-    user=models.ForeignKey(User, on_delete=models.DO_NOTHING,  related_name='addresses',null=True, blank=True)
+    user=models.ForeignKey(User, on_delete=models.CASCADE,  related_name='addresses',null=True, blank=True)
     address = models.TextField()
-    additional_info = models.TextField()
+    additional_info = models.TextField(null=True, blank=True)
     city=models.CharField(max_length=400)
     region=models.CharField(max_length=400)
     is_active=models.BooleanField(default=True)
-    
+    date_added = models.DateTimeField(auto_now_add=True)
     
     def delete(self):
         self.is_active=False
@@ -80,15 +81,15 @@ class Address(models.Model):
     
 
 class SocialMedia(models.Model):
-    user=models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='handles', null=True, blank=True)
-    facebook = models.URLField(null=True)
-    linkedin=models.URLField(null=True)
-    instagram=models.URLField(null=True)
-    twitter=models.URLField(null=True)
-    github=models.URLField(null=True)
-    behance=models.URLField(null=True)
+    user=models.ForeignKey(User, on_delete=models.CASCADE, related_name='handles', null=True, blank=True)
+    facebook = models.URLField(null=True, blank=True)
+    linkedin=models.URLField(null=True, blank=True)
+    instagram=models.URLField(null=True, blank=True)
+    twitter=models.URLField(null=True, blank=True)
+    github=models.URLField(null=True, blank=True)
+    behance=models.URLField(null=True, blank=True)
     is_active=models.BooleanField(default=True)
-    
+    date_added = models.DateTimeField(auto_now_add=True)
     
     def delete(self):
         self.is_active=False
@@ -101,11 +102,12 @@ class TertiaryInstitution(models.Model):
     field_of_study = models.CharField(max_length=300)
     qualification = models.CharField(max_length=300)
     start_date = models.DateField()
-    end_date = models.DateField(null=True)
-    complete = models.BooleanField(default=False)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='tertiary_institutions')
+    end_date = models.DateField(null=True, blank=True)
+    complete = models.BooleanField(null=True, blank=True)
+    expected_end_date = models.DateField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='tertiary_institutions')
     is_active=models.BooleanField(default=True)
-    
+    date_added = models.DateTimeField(auto_now_add=True)
     
     def delete(self):
         self.is_active=False
@@ -118,25 +120,47 @@ class HighSchool(models.Model):
     institution = models.CharField(max_length=3600)
     qualification = models.CharField(max_length=300)
     start_date = models.DateField()
-    end_date = models.DateField(null=True)
-    complete = models.BooleanField(default=False)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='high_schools')
+    end_date = models.DateField(null=True, blank=True)
+    complete = models.BooleanField(null=True, blank=True)
+    expected_end_date = models.DateField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='high_schools')
     is_active=models.BooleanField(default=True)
-    
+    date_added = models.DateTimeField(auto_now_add=True)
     
     def delete(self):
         self.is_active=False
         self.save()
         return
     
+class Course(models.Model):
+    title = models.CharField(max_length=250, unique=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    is_active=models.BooleanField(default=True)
+    
+    
+    def delete(self):
+        self.is_active=False
+        self.save()
+        
+        
+class Cohort(models.Model):
+    title = models.CharField(max_length=250, unique=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    is_active=models.BooleanField(default=True)
+    
+    
+    def delete(self):
+        self.is_active=False
+        self.save()
 
 class TrainingPathway(models.Model):
-    course = models.CharField(max_length=300)
-    cohort = models.CharField(max_length=300)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
+    cohort = models.ForeignKey(Cohort, on_delete=models.CASCADE, null=True)
     campus = models.CharField(max_length=300)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='pathway')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='pathway')
     is_active = models.BooleanField(default=True)
-    
+    date_added = models.DateTimeField(auto_now_add=True)
+        
     def delete(self):
         self.is_active=False
         self.save()
@@ -149,7 +173,7 @@ class KYC(models.Model):
     city = models.CharField(max_length=300)
     local_gov = models.CharField(max_length=300)
     doc_url = models.URLField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='kyc_docs')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='kyc_docs')
     is_active =  models.BooleanField(default=True)
     
     
@@ -157,3 +181,8 @@ class KYC(models.Model):
         self.is_active=False
         self.save()
         return
+    
+    
+    
+
+        

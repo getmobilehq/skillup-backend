@@ -1,7 +1,7 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
-from .models import Address, BankDetails, SocialMedia, UserEmploymentDetail, UserProfile
-from .serializers import AddHighSchoolSerializer, AddInstitutionSerializer, AddressSerializer, BankDetailsSerializer, LaptopLoanSerializer, PathWaySerializer, SocialMediaSerializer, UserEmploymentDetailSerializer, UserProfileSerializer, VerifyIdentity, FileUploadSerializer
+from .models import Address, BankDetails, Cohort, Course, SocialMedia, UserEmploymentDetail, UserProfile
+from .serializers import AddHighSchoolSerializer, AddInstitutionSerializer, AddressSerializer, BankDetailsSerializer, CohortSerializer, CourseSerializer, LaptopLoanSerializer, PathWaySerializer, SocialMediaSerializer, UserEmploymentDetailSerializer, UserProfileSerializer, VerifyIdentity, FileUploadSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -29,8 +29,10 @@ def verify_identity(request):
 
         if serializer.is_valid():
             res = serializer.check_identity(serializer.validated_data, request)
-            
-            return Response(res, status = status.HTTP_200_OK)
+            if res['status'] == True:
+                return Response(res, status = status.HTTP_200_OK)
+            else:
+                return Response(res, status = status.HTTP_400_BAD_REQUEST)
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -49,8 +51,8 @@ def upload_doc(request):
 
         if serializer.is_valid():
             password = serializer.validated_data.pop('password')
-            auth_user = authenticate(request.user.email, password)
-            if auth_user and auth_user == request.user:
+            auth_user = authenticate(email = request.user.email, password = password)
+            if auth_user != None and auth_user == request.user:
                 user = serializer.upload(serializer.validated_data, request)
                 
                 user_serializer = UserSerializer(user)
@@ -103,7 +105,7 @@ def user_address(request):
         
         if serializer.is_valid():
             
-            if request.user.has_added_address:
+            if request.user.has_added_address == True:
                 data = {
                 'status' : True,
                 'message' : 'cannot add multiple addresses',
@@ -504,6 +506,7 @@ def unemployed(request):
         if request.user.has_added_employment_detail == False:
             request.user.has_work_experience = False
             request.user.has_added_employment_detail=True
+            request.user.checklist_count+=1
             request.user.save()
         
             return Response({'message':'success'}, status=status.HTTP_202_ACCEPTED)
@@ -573,3 +576,30 @@ def add_pathway(request):
             return Response(data.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])  
+def courses(request):
+    if request.method == 'GET':
+        course = Course.objects.filter(is_active=True)
+        serializer = CourseSerializer(course, many=True)
+        
+            
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])  
+def cohorts(request):
+    if request.method == 'GET':
+        cohort = Cohort.objects.filter(is_active=True)
+        serializer = CohortSerializer(cohort, many=True)
+        
+            
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        

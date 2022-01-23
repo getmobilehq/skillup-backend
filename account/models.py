@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from .managers import UserManager
 from django.forms.models import model_to_dict
 import uuid
+from django.utils import timezone
 
 AUTH_PROVIDERS = {'facebook': 'facebook', 
                   'google': 'google',  
@@ -21,14 +22,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     firstname          = models.CharField(_('first name'),max_length = 250)
     lastname          = models.CharField(_('last name'),max_length = 250)
     email         = models.EmailField(_('email'), unique=True)
-    phone         = models.CharField(_('phone'), validators=[phone_regex],max_length = 15)
+    phone         = models.CharField(_('phone'), validators=[phone_regex],max_length = 15, unique=True)
     password      = models.CharField(_('password'), max_length=300)
     how_did_you_hear_about_us = models.CharField(max_length=500)
     is_staff      = models.BooleanField(_('staff'), default=False)
     is_admin      = models.BooleanField(_('admin'), default= False)
     is_active     = models.BooleanField(_('active'), default=True)
     completed_nysc = models.CharField(max_length=250, null=True, blank=True)
-    nysc_not_applicable_reason = models.TextField(null=True)
+    nysc_not_applicable_reason = models.TextField(null=True, blank=True)
     has_work_experience = models.BooleanField(_('work experience'), blank=True, null=True)
     has_laptop = models.BooleanField(null=True, blank=True) 
     take_laptop_loan = models.BooleanField(null=True, blank=True) 
@@ -94,6 +95,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 class OTP(models.Model):
     code = models.CharField(max_length=6)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='otps')
+    expiry_date = models.DateTimeField(null=True)
+    
+    
+    def is_expired(self):
+        return timezone.now() > self.expiry_date
     
 
     

@@ -9,15 +9,22 @@ from .models import OTP
 from config import settings
 from rest_framework import serializers
 from django.template.loader import render_to_string
+import random
+from django.utils import timezone
+from datetime import datetime
 
-totp = pyotp.TOTP('base32secret3232', interval=18000)
+# totp = pyotp.TOTP('base32secret3232', interval=18000)
+
+def generate_code():
+    code = [str(random.choice(range(0,10))) for i in range(6)]
+    return ''.join(code)
    
 
 User = get_user_model()
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
-    token = "https://skillupafrica.netlify.app/{}".format(reset_password_token.key)
+    token = "https://skillupafrica.netlify.app/reset/{}".format(reset_password_token.key)
     
     msg_html = render_to_string('forgot_password.html', {
                         'first_name': str(reset_password_token.user.firstname).title(),
@@ -68,36 +75,38 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
        
 class OTPVerifySerializer(serializers.Serializer):
     otp = serializers.CharField(max_length=6)
+    email = serializers.EmailField()
     
     
     def verify_otp(self):
         otp = self.validated_data['otp']
+        email = self.validated_data['email']
         
         if OTP.objects.filter(code=otp).exists():
             try:
-                otp = OTP.objects.get(code=otp)
+                otp = OTP.objects.get(code=otp, user__email = email)
             except Exception:
                 OTP.objects.filter(code=otp).delete()
                 raise serializers.ValidationError(detail='Cannot verify otp. Please try later')
             
-            if totp.verify(otp):
+            if otp.is_expired():
+                raise serializers.ValidationError(detail='OTP expired')
+                
+            else:
                 if otp.user.has_verified_email == False:
                     otp.user.has_verified_email=True
                     otp.user.checklist_count+=1
                     otp.user.save()
                     
                     #clear all otp for this user after verification
-                    all_otps = OTP.objects.filter(user=otp.user)
-                    all_otps.delete()
+                    # all_otps = OTP.objects.filter(user=otp.user)
+                    # all_otps.delete()
                     
                     serializer = UserSerializer(otp.user)
                     return {'message': 'Verification Complete', 'data':serializer.data}
                 else:
                     raise serializers.ValidationError(detail='User with this otp has been verified before.')
-            
                 
-            else:
-                raise serializers.ValidationError(detail='OTP expired')
                     
         
         else:
@@ -114,9 +123,10 @@ class OtpSerializer(serializers.Serializer):
         except User.DoesNotExist:
             raise serializers.ValidationError(detail='Please confirm that the email is correct or email has not been verified.')
         
-        code = totp.now()
-        # print(code)
-        OTP.objects.create(code=code, user=user)
+        code = generate_code()
+        expiry_date = timezone.now() + timezone.timedelta(minutes=5)
+        
+        OTP.objects.create(code=code, user=user, expiry_date=expiry_date)
         subject = "Verify Email for Skill Up Application"
         
         message = f"""Hi, {str(user.firstname).title()}.

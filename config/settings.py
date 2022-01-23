@@ -16,7 +16,7 @@ from dotenv import load_dotenv, find_dotenv
 import os
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
-
+import cloudinary
 load_dotenv(find_dotenv())
 
 
@@ -199,6 +199,15 @@ class Common(Configuration):
     
     
     CORS_ALLOW_ALL_ORIGINS=True
+    
+    #CLOUDINARY FILE UPLOADS
+    cloudinary.config(
+        cloud_name = os.getenv('CLOUD_NAME'),
+        api_key = os.getenv('CLOUD_API_KEY'),
+        api_secret = os.getenv('CLOUD_API_SECRET')
+    )
+    DEFAULT_FROM_EMAIL = 'Skillup Africa <hello@skillup.africa>'
+
 
 
 class Development(Common):
@@ -260,7 +269,7 @@ class Production(Staging):
     Common.ALLOWED_HOSTS.append('skillup-api.herokuapp.com')
     
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'in-v3.mailjet.com' 
+    EMAIL_HOST = 'smtp.gmass.co' 
     EMAIL_PORT = 25
     EMAIL_HOST_USER = os.getenv('EMAIL_USERNAME')
     EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')

@@ -21,5 +21,7 @@ urlpatterns = [
     path('add_tertiary_institution/',views.add_tertiary_institution),
     path('add_high_school/',views.add_high_school),
     path('learning_pathway/',views.add_pathway),
-    path('laptop_detail/',views.laptop_detail)
+    path('laptop_detail/',views.laptop_detail),
+    path('courses/',views.courses),
+    path('cohorts/',views.cohorts)
 ]
