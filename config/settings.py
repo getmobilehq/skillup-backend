@@ -18,6 +18,7 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 import cloudinary
 load_dotenv("/home/skillup-backend/config/.env")
+# load_dotenv(find_dotenv())
 
 
 class Common(Configuration):
