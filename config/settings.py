@@ -246,7 +246,7 @@ class Staging(Common):
     SECURE_PROXY_SSL_HEADER = values.TupleValue(
         ('HTTP_X_FORWARDED_PROTO', 'https')
     )
-
+    Common.ALLOWED_HOSTS.append('skillup-api.herokuapp.com')
 
 class Production(Staging):
     """
@@ -266,7 +266,7 @@ class Production(Staging):
     send_default_pii=True
     )
     
-    Common.ALLOWED_HOSTS.append('skillup-api.herokuapp.com')
+    
     
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.gmass.co' 
@@ -275,3 +275,13 @@ class Production(Staging):
     EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
     EMAIL_USE_TLS =True 
     
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': 'localhost',
+            'PORT': '',
+        }
+    }
