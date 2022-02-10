@@ -3,6 +3,9 @@
 import os
 import sys
 
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv("/home/skillup-backend/config/.env")
 
 def main():
     """Run administrative tasks."""
