@@ -269,11 +269,11 @@ class Production(Staging):
     ALLOWED_HOSTS = ['api.skillup.africa', '138.197.178.27']
     
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.gmass.co' 
-    EMAIL_PORT = 25
+    EMAIL_HOST = 'smtp.mailgun.org' 
+    EMAIL_PORT = 587
     EMAIL_HOST_USER = os.getenv('EMAIL_USERNAME')
     EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
-    EMAIL_USE_TLS =True 
+    EMAIL_USE_SSL =True 
     
     DATABASES = {
         'default': {
