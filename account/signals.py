@@ -36,7 +36,7 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         subject = "RESET PASSWORD FOR SKILLUP AFRICA PORTAL",
         message= message,
         html_message=msg_html,
-        from_email  = 'SKILLUP SUPPORT <hello@skillup.africa>',
+        from_email  = 'SKILLUP SUPPORT <noreply@mg.skillup.africa>',
         recipient_list= [reset_password_token.user.email]
     )
     
