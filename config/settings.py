@@ -270,10 +270,10 @@ class Production(Staging):
     
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = 'smtp.mailgun.org' 
-    EMAIL_PORT = 587
+    EMAIL_PORT = 25
     EMAIL_HOST_USER = os.getenv('EMAIL_USERNAME')
     EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
-    EMAIL_USE_SSL =True 
+    EMAIL_USE_TSL =True 
     
     DATABASES = {
         'default': {
